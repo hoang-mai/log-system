@@ -1,0 +1,27 @@
+rules:
+  - name: metric
+    file-name: mon
+    priority: 2
+    conditions:
+      - operator: "matches"
+        regex: 'MetricName:\s*([^;]+);\s*ObjectPath:\s*([^;]+);\s*NumberValue:\s*(\d+)'
+        outputs:
+          - name: metric_name
+            source: 1
+          - name: object_path
+            source: 2
+          - name: number_value
+            source: 3
+  - name: exception
+    file-name: ext
+    priority: 1
+    conditions:
+      - operator: "matches"
+        regex: '(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\sE\s(\[.*?].*?>)\s*(.*?Thread: .*?;)'
+        outputs:
+          - name: timestamp
+            source: 1
+          - name: exception_type
+            source: 2
+          - name: message
+            source: 3
